@@ -72,7 +72,8 @@
       // Use an alternative CORS proxy for the Google Apps Script fetch request
       const CORS_PROXY = "https://thingproxy.freeboard.io/fetch/"; // Alternative CORS proxy
 
-      fetch(`${CORS_PROXY}https://script.google.com/macros/s/1c3FlMWA126lrl2hUtJ1VXxGRNxD6nq48yBwnQyk8tRU/exec?name=${encodeURIComponent(decodedText)}`)
+      fetch(`http://localhost:3000/fetch?url=https://script.google.com/macros/s/1c3FlMWA126lrl2hUtJ1VXxGRNxD6nq48yBwnQyk8tRU/exec?name=${encodeURIComponent(decodedText)}`)
+
         .then(response => {
           // Check if the response is ok, otherwise throw an error
           if (!response.ok) {

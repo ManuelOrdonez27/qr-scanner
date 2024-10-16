@@ -42,9 +42,6 @@
       background-color: #45a049;
     }
   </style>
-
-  <!-- Include the html5-qrcode library -->
-  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 </head>
 <body>
   <h1>Scan Your QR Code to See Your Table</h1>
@@ -60,6 +57,9 @@
     <p id="guest-name"></p>
     <p id="table-number"></p>
   </div>
+
+  <!-- Include the html5-qrcode library at the end -->
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 
   <!-- JavaScript to handle QR code scanning and display guest's table -->
   <script>

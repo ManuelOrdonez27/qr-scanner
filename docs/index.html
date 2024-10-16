@@ -1,1 +1,95 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table Assignment</title>
+  
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      color: #333;
+    }
+    #qr-reader {
+      width: 300px;
+      margin: auto;
+    }
+    .guest-info {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #333;
+    }
+  </style>
+
+  <!-- Include the html5-qrcode library -->
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+</head>
+<body>
+  <h1>Scan Your QR Code to See Your Table</h1>
+
+  <!-- QR Code Reader -->
+  <div id="qr-reader"></div>
+  
+  <!-- Placeholder to Display Guest's Name and Table -->
+  <div class="guest-info">
+    <p id="guest-name"></p>
+    <p id="table-number"></p>
+  </div>
+
+  <!-- JavaScript to handle QR code scanning and display guest's table -->
+  <script>
+    // Example data of guests and their table numbers
+    const guestTableAssignments = {
+      'JohnDoe': 'Table 1',
+      'AliceSmith': 'Table 2',
+      'BobJones': 'Table 3'
+    };
+
+    // Function to display the guest's name and their assigned table
+    function displayGuestInfo(guestName) {
+      const tableNumber = guestTableAssignments[guestName];
+      if (tableNumber) {
+        document.getElementById('guest-name').innerText = 'Hello, ' + guestName + '!';
+        document.getElementById('table-number').innerText = 'Your table is: ' + tableNumber;
+      } else {
+        document.getElementById('guest-name').innerText = 'Guest not recognized.';
+        document.getElementById('table-number').innerText = '';
+      }
+    }
+
+    // Initialize the QR code reader
+    function onScanSuccess(decodedText, decodedResult) {
+      console.log(`Code scanned: ${decodedText}`);
+      displayGuestInfo(decodedText);  // Use the decoded text (guest name)
+      html5QrCode.stop();  // Stop the scanner once we have a result
+    }
+
+    function onScanFailure(error) {
+      console.warn(`QR scan failed: ${error}`);
+    }
+
+    const html5QrCode = new Html5Qrcode("qr-reader");
+    
+    // Start scanning
+    html5QrCode.start(
+      { facingMode: "environment" }, // Camera facing back
+      {
+        fps: 10, // Scans per second
+        qrbox: { width: 250, height: 250 }  // Size of the scanning box
+      },
+      onScanSuccess,
+      onScanFailure
+    );
+  </script>
+</body>
+</html>

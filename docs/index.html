@@ -64,21 +64,15 @@
 
   <!-- JavaScript to handle QR code scanning and display guest's table -->
   <script>
-    // Example data of guests and their table numbers
-    const guestTableAssignments = {
-      'Manuel Ordoñez': 'Table 1',
-      'AliceSmith': 'Table 2',
-      'BobJones': 'Table 3'
-    };
+    const scriptURL = 'https://script.google.com/macros/s/1c3FlMWA126lrl2hUtJ1VXxGRNxD6nq48yBwnQyk8tRU/exec'; // Replace with your Google Apps Script URL
 
     // Function to display the guest's name and their assigned table
-    function displayGuestInfo(guestName) {
-      const tableNumber = guestTableAssignments[guestName];
-      if (tableNumber) {
+    function displayGuestInfo(guestName, tableNumber) {
+      if (tableNumber && tableNumber !== 'No table assigned yet') {
         document.getElementById('guest-name').innerText = 'Hello, ' + guestName + '!';
         document.getElementById('table-number').innerText = 'Your table is: ' + tableNumber;
       } else {
-        document.getElementById('guest-name').innerText = 'Error: Persona no reconocida.';
+        document.getElementById('guest-name').innerText = 'Error: No table assigned yet.';
         document.getElementById('table-number').innerText = '';
       }
     }
@@ -114,7 +108,18 @@
     // Function to stop the camera after successfully scanning the QR code
     function onScanSuccess(decodedText, decodedResult) {
       console.log(`Code scanned: ${decodedText}`);
-      displayGuestInfo(decodedText);  // Use the decoded text (guest name)
+
+      // Fetch the table assignment from the Google Apps Script
+      fetch(`${scriptURL}?name=${encodeURIComponent(decodedText)}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('Table assignment data:', data);
+          displayGuestInfo(decodedText, data.table);  // Use the decoded text (guest name) and the returned table number
+        })
+        .catch(error => {
+          console.error('Error fetching table assignment:', error);
+        });
+
       html5QrCode.stop();  // Stop the scanner once we have a result
 
       // Optionally, hide the QR reader div after scanning

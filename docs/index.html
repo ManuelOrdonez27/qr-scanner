@@ -71,7 +71,8 @@
 
       // Use an alternative CORS proxy for the Google Apps Script fetch request
       const CORS_PROXY = "https://thingproxy.freeboard.io/fetch/"; // Alternative CORS proxy
-
+      console.log(decodedText);
+      console.log(decodedResult);
       fetch(`http://localhost:3000/fetch?url=https://script.google.com/macros/s/AKfycbwja9R0mwtMvXz5TlrWeRdfNG3yhLkuw13zrhbxgH89n8AEgk2j5zF_cHhAGZ8XUQ2Z0A/exec?name=${encodeURIComponent(decodedText)}`)
 
         .then(response => {
@@ -79,7 +80,10 @@
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
+          console.log(response.json());
+          console.log(response);
           return response.json();
+          
         })
         .then(data => {
           if (data.table) {

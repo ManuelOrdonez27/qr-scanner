@@ -84,8 +84,15 @@
         .then(data => {
           if (data.table) {
             document.getElementById('table-number').innerText = 'Your table is: ' + data.table;
+            console.log(data);
+            console.log(data.table);
+            console.log(document.getElementById('table-number'));
+
           } else {
             document.getElementById('table-number').innerText = 'No table assignment found.';
+            console.log(data);
+            console.log(data.table);
+            console.log(document.getElementById('table-number'));
           }
         })
         .catch(error => {

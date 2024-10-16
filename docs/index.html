@@ -108,26 +108,25 @@
     // Function to stop the camera after successfully scanning the QR code
     function onScanSuccess(decodedText, decodedResult) {
   // Show the scanned guest name
-  document.getElementById('result').innerHTML = "Guest Name: " + decodedText;
+    document.getElementById('result').innerHTML = "Guest Name: " + decodedText;
 
-  // Use a CORS proxy for the Google Apps Script fetch request
-  const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"; // Public CORS proxy
+    // Use a CORS proxy for the Google Apps Script fetch request
+    const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"; // Public CORS proxy
 
-  fetch(`${CORS_PROXY}https://script.google.com/macros/s/1c3FlMWA126lrl2hUtJ1VXxGRNxD6nq48yBwnQyk8tRU/exec?name=${encodeURIComponent(decodedText)}`)
-    .then(response => response.json())
-    .then(data => {
-      if (data.table) {
-        document.getElementById('result').innerHTML += `<br>Table Number: ${data.table}`;
-      } else {
-        document.getElementById('result').innerHTML += '<br>No table assignment found.';
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching table assignment:', error);
-      document.getElementById('result').innerHTML += '<br>Error fetching table assignment.';
-    });
-}
-
+    fetch(`${CORS_PROXY}https://script.google.com/macros/s/1c3FlMWA126lrl2hUtJ1VXxGRNxD6nq48yBwnQyk8tRU/exec?name=${encodeURIComponent(decodedText)}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.table) {
+          document.getElementById('result').innerHTML += `<br>Table Number: ${data.table}`;
+          } else {
+            document.getElementById('result').innerHTML += '<br>No table assignment found.';
+          }
+      })
+      .catch(error => {
+        console.error('Error fetching table assignment:', error);
+        document.getElementById('result').innerHTML += '<br>Error fetching table assignment.';
+      });
+    }
 
     function onScanFailure(error) {
       console.warn(`QR scan failed: ${error}`);

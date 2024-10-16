@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,11 +22,24 @@
     #qr-reader {
       width: 300px;
       margin: auto;
+      display: none; /* Hidden by default, shown after button is clicked */
     }
     .guest-info {
       margin-top: 20px;
       font-size: 1.2em;
       color: #333;
+    }
+    .scan-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .scan-button:hover {
+      background-color: #45a049;
     }
   </style>
 
@@ -36,6 +48,9 @@
 </head>
 <body>
   <h1>Scan Your QR Code to See Your Table</h1>
+
+  <!-- Button to start scanning -->
+  <button class="scan-button" id="start-scan-btn">Start QR Code Scan</button>
 
   <!-- QR Code Reader -->
   <div id="qr-reader"></div>
@@ -68,28 +83,37 @@
     }
 
     // Initialize the QR code reader
+    const html5QrCode = new Html5Qrcode("qr-reader");
+
+    // Function to start the camera when the button is clicked
+    document.getElementById('start-scan-btn').addEventListener('click', function() {
+      // Show the QR reader div
+      document.getElementById('qr-reader').style.display = 'block';
+      // Start scanning
+      html5QrCode.start(
+        { facingMode: "environment" }, // Camera facing back
+        {
+          fps: 10, // Scans per second
+          qrbox: { width: 250, height: 250 }  // Size of the scanning box
+        },
+        onScanSuccess,
+        onScanFailure
+      );
+    });
+
+    // Function to stop the camera after successfully scanning the QR code
     function onScanSuccess(decodedText, decodedResult) {
       console.log(`Code scanned: ${decodedText}`);
       displayGuestInfo(decodedText);  // Use the decoded text (guest name)
       html5QrCode.stop();  // Stop the scanner once we have a result
+
+      // Optionally, hide the QR reader div after scanning
+      document.getElementById('qr-reader').style.display = 'none';
     }
 
     function onScanFailure(error) {
       console.warn(`QR scan failed: ${error}`);
     }
-
-    const html5QrCode = new Html5Qrcode("qr-reader");
-    
-    // Start scanning
-    html5QrCode.start(
-      { facingMode: "environment" }, // Camera facing back
-      {
-        fps: 10, // Scans per second
-        qrbox: { width: 250, height: 250 }  // Size of the scanning box
-      },
-      onScanSuccess,
-      onScanFailure
-    );
   </script>
 </body>
 </html>

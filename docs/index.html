@@ -64,17 +64,27 @@
 
   <!-- JavaScript to handle QR code scanning and display guest's table -->
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/1c3FlMWA126lrl2hUtJ1VXxGRNxD6nq48yBwnQyk8tRU/exec'; // Replace with your Google Apps Script URL
+    // Function to handle successful QR code scans
+    function onScanSuccess(decodedText, decodedResult) {
+      // Show the scanned guest name
+      document.getElementById('guest-name').innerText = "Guest Name: " + decodedText;
 
-    // Function to display the guest's name and their assigned table
-    function displayGuestInfo(guestName, tableNumber) {
-      if (tableNumber && tableNumber !== 'No table assigned yet') {
-        document.getElementById('guest-name').innerText = 'Hello, ' + guestName + '!';
-        document.getElementById('table-number').innerText = 'Your table is: ' + tableNumber;
-      } else {
-        document.getElementById('guest-name').innerText = 'Error: No table assigned yet.';
-        document.getElementById('table-number').innerText = '';
-      }
+      // Use a CORS proxy for the Google Apps Script fetch request
+      const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"; // Public CORS proxy
+
+      fetch(`${CORS_PROXY}https://script.google.com/macros/s/1c3FlMWA126lrl2hUtJ1VXxGRNxD6nq48yBwnQyk8tRU/exec?name=${encodeURIComponent(decodedText)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.table) {
+            document.getElementById('table-number').innerText = 'Your table is: ' + data.table;
+          } else {
+            document.getElementById('table-number').innerText = 'No table assignment found.';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching table assignment:', error);
+          document.getElementById('table-number').innerText = 'Error fetching table assignment.';
+        });
     }
 
     // Initialize the QR code reader
@@ -96,7 +106,7 @@
         { facingMode: "environment" }, // Camera facing back
         {
           fps: 10, // Scans per second
-          qrbox: { width: 150, height: 150 }  // Size of the scanning box
+          qrbox: { width: 250, height: 250 }  // Size of the scanning box
         },
         onScanSuccess,
         onScanFailure
@@ -104,29 +114,6 @@
         console.error("Failed to start the QR scanner:", err);
       });
     });
-
-    // Function to stop the camera after successfully scanning the QR code
-    function onScanSuccess(decodedText, decodedResult) {
-  // Show the scanned guest name
-    document.getElementById('result').innerHTML = "Guest Name: " + decodedText;
-
-    // Use a CORS proxy for the Google Apps Script fetch request
-    const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"; // Public CORS proxy
-
-    fetch(`${CORS_PROXY}https://script.google.com/macros/s/1c3FlMWA126lrl2hUtJ1VXxGRNxD6nq48yBwnQyk8tRU/exec?name=${encodeURIComponent(decodedText)}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.table) {
-          document.getElementById('result').innerHTML += `<br>Table Number: ${data.table}`;
-          } else {
-            document.getElementById('result').innerHTML += '<br>No table assignment found.';
-          }
-      })
-      .catch(error => {
-        console.error('Error fetching table assignment:', error);
-        document.getElementById('result').innerHTML += '<br>Error fetching table assignment.';
-      });
-    }
 
     function onScanFailure(error) {
       console.warn(`QR scan failed: ${error}`);

@@ -70,7 +70,7 @@
       document.getElementById('guest-name').innerText = "Guest Name: " + decodedText;
 
       // Use an alternative CORS proxy for the Google Apps Script fetch request
-      const CORS_PROXY = "https://cors-anywhere.herokuapp.com/corsdemo/"; // Alternative CORS proxy
+      const CORS_PROXY = "https://thingproxy.freeboard.io/fetch/"; // Alternative CORS proxy
 
       fetch(`${CORS_PROXY}https://script.google.com/macros/s/AKfycbwja9R0mwtMvXz5TlrWeRdfNG3yhLkuw13zrhbxgH89n8AEgk2j5zF_cHhAGZ8XUQ2Z0A/exec?name=${encodeURIComponent(decodedText)}`)
 

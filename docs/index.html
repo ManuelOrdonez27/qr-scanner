@@ -83,13 +83,20 @@
     }
 
     // Initialize the QR code reader
-    const html5QrCode = new Html5Qrcode("qr-reader");
+    let html5QrCode;
 
-    // Function to start the camera when the button is clicked
+    // Add an event listener to the button
     document.getElementById('start-scan-btn').addEventListener('click', function() {
+      console.log("Button clicked! Starting QR code scan...");
+
       // Show the QR reader div
       document.getElementById('qr-reader').style.display = 'block';
-      // Start scanning
+
+      // Start the QR code reader if it's not already running
+      if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("qr-reader");
+      }
+
       html5QrCode.start(
         { facingMode: "environment" }, // Camera facing back
         {
@@ -98,7 +105,9 @@
         },
         onScanSuccess,
         onScanFailure
-      );
+      ).catch(err => {
+        console.error("Failed to start the QR scanner:", err);
+      });
     });
 
     // Function to stop the camera after successfully scanning the QR code

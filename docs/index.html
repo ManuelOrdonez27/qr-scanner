@@ -69,11 +69,17 @@
       // Show the scanned guest name
       document.getElementById('guest-name').innerText = "Guest Name: " + decodedText;
 
-      // Use a CORS proxy for the Google Apps Script fetch request
-      const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"; // Public CORS proxy
+      // Use an alternative CORS proxy for the Google Apps Script fetch request
+      const CORS_PROXY = "https://thingproxy.freeboard.io/fetch/"; // Alternative CORS proxy
 
       fetch(`${CORS_PROXY}https://script.google.com/macros/s/1c3FlMWA126lrl2hUtJ1VXxGRNxD6nq48yBwnQyk8tRU/exec?name=${encodeURIComponent(decodedText)}`)
-        .then(response => response.json())
+        .then(response => {
+          // Check if the response is ok, otherwise throw an error
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then(data => {
           if (data.table) {
             document.getElementById('table-number').innerText = 'Your table is: ' + data.table;
